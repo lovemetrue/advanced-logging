@@ -1,0 +1,18 @@
+services:
+  elastalert:
+    image: jertel/elastalert2:latest
+    container_name: elastalert
+    volumes:
+      - ./elastalert/config.yaml:/opt/elastalert/config.yaml
+      - ./elastalert/rules:/opt/elastalert/rules
+      - ./elastalert/logs:/opt/elastalert/logs
+    environment:
+      - ES_HOST=elasticsearch
+      - ES_PORT=9200
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk-network
+    restart: unless-stopped
