@@ -1,0 +1,29 @@
+name: "Critical Errors - Telegram Notification"
+type: frequency
+index: enriched-logs-*
+num_events: 1
+timeframe:
+  minutes: 1
+
+filter:
+- term:
+    level: "ERROR"
+- terms:
+    status_category: ["server_error", "auth_error"]
+
+alert:
+- "telegram"
+
+telegram_bot_token: "YOUR_BOT_TOKEN"
+telegram_room_id: "YOUR_CHAT_ID"
+
+alert_subject: "🚨 Critical System Error"
+alert_text: |
+  🔴 Critical error detected!
+  
+  📝 Message: {{_source.message}}
+  👤 User: {{_source.user.name}}
+  🕒 Time: {{_source.timestamp}}
+  🌐 IP: {{_source.client_ip}}
+  
+  ⚠️ Immediate attention required!
