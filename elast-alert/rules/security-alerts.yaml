@@ -1,0 +1,30 @@
+name: "Security Related Events"
+type: frequency
+index: enriched-logs-*
+num_events: 3
+timeframe:
+  minutes: 5
+
+filter:
+- terms:
+    tags: ["security_related"]
+- term:
+    level: "ERROR"
+
+alert:
+- "debug"
+
+alert_subject: "Security Events Detected"
+alert_text: |
+  Detected {0} security-related error events in the last 5 minutes.
+  
+  Security events:
+  {{#hits}}
+  - Message: {{_source.message}}
+    User: {{_source.user.name}}
+    Time: {{_source.timestamp}}
+    IP: {{_source.client_ip}}
+  {{/hits}}
+
+realert:
+  minutes: 10
