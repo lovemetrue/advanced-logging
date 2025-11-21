@@ -1,0 +1,30 @@
+name: "Error Rate Spike"
+type: spike
+index: enriched-logs-*
+threshold_cur: 10
+threshold_ref: 2
+timeframe:
+  minutes: 5
+spike_height: 3
+spike_type: "up"
+
+filter:
+- term:
+    level: "ERROR"
+
+alert:
+- "debug"
+
+alert_subject: "Spike in Error Messages Detected"
+alert_text: |
+  Detected {1} errors in the last 5 minutes, which is significantly higher than the usual {0}.
+  
+  Recent errors:
+  {{#hits}}
+  - Time: {{_source.timestamp}}
+    Message: {{_source.message}}
+    User: {{_source.user.name}}
+  {{/hits}}
+
+realert:
+  minutes: 5
