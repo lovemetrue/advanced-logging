@@ -1,0 +1,32 @@
+name: "Slow Performance Detected"
+type: frequency
+index: enriched-logs-*
+num_events: 5
+timeframe:
+  minutes: 10
+
+filter:
+- range:
+    response_time:
+      gt: 1000
+- term:
+    performance_category: "slow"
+
+alert:
+- "debug"
+
+alert_subject: "Slow Performance Detected"
+alert_text: |
+  Detected {0} slow operations (response time > 1000ms) in the last 10 minutes.
+  
+  Slow operations:
+  {{#hits}}
+  - Path: {{_source.http_path}}
+    Method: {{_source.http_method}}
+    Response Time: {{_source.response_time}}ms
+    User: {{_source.user.name}}
+    Time: {{_source.timestamp}}
+  {{/hits}}
+
+realert:
+  minutes: 15
